@@ -35,12 +35,17 @@ in
 }:
 let src =
       builtins.fetchTarball {
-        url = "https://github.com/composewell/nixpack/archive/85e696d04ffdcc.tar.gz";
+        url = "https://github.com/composewell/nixpack/archive/ba3571d3bd01f7f3.tar.gz";
       };
     nixpack = import "${src}/nix";
+
+    nixpkgs1 = nixpkgs.extend (self: super: {
+      nixpack = nixpack;
+    });
+
     env =
       nixpack.mkEnv
-        { inherit nixpkgs;
+        { nixpkgs = nixpkgs1;
           name = "nixpack-editors";
           packages = import ./packages.nix;
           isDev = true;

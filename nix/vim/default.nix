@@ -2,7 +2,6 @@
 
 { nixpkgs }:
 
-#with import ../utils.nix {nixpkgs = nixpkgs;};
 let
   # Load plugins from a separate file
   plugins = import ./plugins.nix { pkgs = nixpkgs.pkgs; };
@@ -53,19 +52,19 @@ in {
       ];
     });
 
-  # XXX rename to vim.bashrc and vim.gitconfig
+  # XXX rename to vim_bashrc and vim_gitconfig
 
   #------------------------------------------------------------------------------
   # bashrc
   #------------------------------------------------------------------------------
-  # We source it in ~/.bashrc from "etc".
-  #vim.bashrc =
-  #  writeShellScriptTo
-  #    "bashrc_vim" "/etc/bashrc.d/01_vim" (builtins.readFile ./bashrc);
+  # We source it in ~/.bashrc from "etc/bashrc.d".
+  vim_bashrc =
+    nixpkgs.nixpack.lib.writeShellScriptTo nixpkgs
+      "bashrc_vim" "/etc/bashrc.d/01_vim" (builtins.readFile ./bashrc);
 
   #------------------------------------------------------------------------------
   # gitconfig
   #------------------------------------------------------------------------------
   # We source it in ~/.gitconfig from "etc".
-  vim.gitconfig = etcTextFile "gitconfig.vim" ./gitconfig;
+  vim_gitconfig = etcTextFile "gitconfig.vim" ./gitconfig;
 }
