@@ -275,13 +275,44 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-" Copy and paste to os clipboard
+" Copying text for middle-click pasting.
 nmap <leader>y "*y
 vmap <leader>y "*y
+
+" Cutting text to the middle-click clipboard.
 nmap <leader>d "*d
 vmap <leader>d "*d
+
+" Pasting text from middle-click clipboard.
 nmap <leader>p "*p
 vmap <leader>p "*p
+
+" On macOS XQuartz 'xclip -selection clipboard' is flaky so we just use the
+" primary for pasting. We can also use both primary and clipboard if required
+" by using 'xclip -in && xclip -in -selection clipboard'.
+"
+" Standard behavior: Copying text to Cmd+V (standard clipboard).
+" We map it to middle click clipboard instead, because of XQuartz issue with
+" standard clipboard sync.
+vnoremap "+y :w !xclip -in<CR><CR>
+
+" Standard behavior: Pasting text copied with Cmd+C.
+" We map is to pasting from middle click clipboard instead.
+nnoremap "+p :read !xclip -out <CR>
+
+" Copy text to Primary selection (middle-click clipboard)
+vnoremap "*y :w !xclip -in<CR><CR>
+
+" Paste from Mac's Primary selection using xclip
+nnoremap "*p :read !xclip -out<CR>
+
+" Map y and p to the same as above for convenience.
+" Make the standard 'y' do the same (if you want)
+vnoremap y :w !xclip -in<CR><CR>
+
+" Just use 'p' in normal mode to pull from Mac
+" (The 'read' command adds a new line; 'system' is cleaner for mid-line pasting)
+nnoremap p :let @a=system('xclip -out')<Bar>put a<CR>
 
 " }}}
 
