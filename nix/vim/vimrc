@@ -312,7 +312,7 @@ vnoremap y :w !xclip -in<CR><CR>
 
 " Just use 'p' in normal mode to pull from Mac
 " (The 'read' command adds a new line; 'system' is cleaner for mid-line pasting)
-nnoremap p :let @a=system('xclip -out')<Bar>put a<CR>
+" nnoremap p :let @a=system('xclip -out')<Bar>put a<CR>
 
 " }}}
 
