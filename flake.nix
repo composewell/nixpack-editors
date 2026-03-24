@@ -1,26 +1,30 @@
+# Adpated from streamly-packages/flake.nix
 {
   description = "Editors with config";
 
+  # XXX it downloads both of these on both systems.
+  # IMPORTANT: if you change the commits, change in common.nix as well.
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/branch-off-24.11";
-    #nixpkgs.url = "github:NixOS/nixpkgs/b2a3852bd078e68dd2b3dfa8c00c67af1f0a7d20"; # nixpkgs-25.05
-    nixpkgs-darwin.url = "github:NixOS/nixpkgs/c3d456aad3a84fcd76b4bebf8b48be169fc45c31"; # nixpkgs-25.05-darwin
-    nixpack.url = "github:composewell/nixpack/ba3571d3bd01f7f3fe946952ba2f78a5e084eb58";
+    nixpkgs.url = "github:NixOS/nixpkgs/6c9a78c09ff4d6c21d0319114873508a6ec01655"; # nixos-unstable
+
+    # Runs into error: darwin.apple_sdk_11_0 has been removed ...
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/6c9a78c09ff4d6c21d0319114873508a6ec01655"; # nixos-unstable
+    #nixpkgs-darwin.url = "github:NixOS/nixpkgs/08478b816182dc3cc208210b996294411690111d"; # nixpkgs-25.05-darwin
+    # For local testing use "path:.../nixpack";
+    basepkgs.url = "github:composewell/nixpack/bebbfc11f153bf3a95c5b9dda4980bf47451bff2";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-darwin, nixpack }:
-    nixpack.flakeOutputs {
+  outputs = { self, nixpkgs, nixpkgs-darwin, basepkgs }:
+    basepkgs.nixpack.mkOutputs {
       inherit nixpkgs;
       inherit nixpkgs-darwin;
-      inherit nixpack;
+      inherit basepkgs;
+      name = "nixpack-editors-flake";
+      packages = import ./packages.nix;
       nixpkgsOptions = {
             config.allowUnfree = true;
             config.allowBroken = true;
           };
-      envOptions = {
-            name = "nixpack-editors-flake";
-            packages = import ./packages.nix;
-            isDev = true;
-      };
-    } // { inherit nixpack;} ;
+      installDocs = true;
+    };
 }
