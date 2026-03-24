@@ -11,7 +11,7 @@ with pkgs.vimPlugins; {
     vim-colors-solarized
     gruvbox
     nord-vim
-    wombat256
+    wombat256-vim
     vim-indent-guides
 
     # Navigation
@@ -21,7 +21,7 @@ with pkgs.vimPlugins; {
     vim-indent-object
 
     # Finder (file, buffer, mru, tag)
-    ctrlp
+    ctrlp-vim
 
     # Editing
     vim-mundo
@@ -35,7 +35,7 @@ with pkgs.vimPlugins; {
 
     # tmux
     vim-tmux-navigator
-    tslime # https://github.com/jgdavey/tslime.vim
+    tslime-vim # https://github.com/jgdavey/tslime.vim
     vim-tbone # yank and paste to/from tmux buffers
 
     # Git
