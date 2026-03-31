@@ -274,6 +274,9 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
+" }}}
+
+" Copy paste related {{{
 
 " Copying text for middle-click pasting.
 nmap <leader>y "*y
@@ -287,32 +290,64 @@ vmap <leader>d "*d
 nmap <leader>p "*p
 vmap <leader>p "*p
 
-" On macOS XQuartz 'xclip -selection clipboard' is flaky so we just use the
-" primary for pasting. We can also use both primary and clipboard if required
-" by using 'xclip -in && xclip -in -selection clipboard'.
+" See yank-paste.md for all commands to be tested if you change the settings.
+"
+" DISPLAY issues when using X11 forwarding: xclip in our path is a
+" wrapper around original xclip it ensures that we are using the right
+" DISPLAY when we disconnect and reconnect. Vim uses xclip in the PATH
+" internally and it will pick up the wrapper.
+"
+" Clipboard sync issues when connecting from macOS: On macOS XQuartz
+" 'xclip -selection clipboard' is flaky so it may be better to use
+" primary for pasting. We can also use both primary and clipboard if
+" required by using 'xclip -in && xclip -in -selection clipboard'.
+"
+" When remapping copy/paste keys, we need to test the following:
+"
+" 1. Cmd+V and "+p should be in sync, they should paste the same thing.
+" "+p is local to the remote machine whereas Cmd+V is the same thing
+" synced to the host machine over X11 forwarding via xclip.
+"
+" 2. Visual mode character based yank works. When writing or reading
+" from xclip using :w, character based yank/paste may not work as
+" expected. Test all visual yank/paste commands especially pasting with Cmd+V
+" after yanking with "+y commands.
+"
+" 3. All other commands listed above should work as expected.
+"
+" NOTE: These are disabled because, :w messes up character based
+" yank/paste, overriding y messes up visual mode yank. We do not need
+" them as xclip is anyway automatically used by nvim. But not sure if
+" it invokes it with primary or system clipboard. Use ":checkhealth
+" provider" to check if vim is using xclip.
 "
 " Standard behavior: Copying text to Cmd+V (standard clipboard).
 " We map it to middle click clipboard instead, because of XQuartz issue with
 " standard clipboard sync.
-vnoremap "+y :w !xclip -in<CR><CR>
+" vnoremap "+y :w !xclip -in<CR><CR>
 
 " Standard behavior: Pasting text copied with Cmd+C.
 " We map is to pasting from middle click clipboard instead.
-nnoremap "+p :read !xclip -out <CR>
+" nnoremap "+p :read !xclip -out <CR>
 
 " Copy text to Primary selection (middle-click clipboard)
-vnoremap "*y :w !xclip -in<CR><CR>
+" vnoremap "*y :w !xclip -in<CR><CR>
 
 " Paste from Mac's Primary selection using xclip
-nnoremap "*p :read !xclip -out<CR>
+" nnoremap "*p :read !xclip -out<CR>
 
 " Map y and p to the same as above for convenience.
 " Make the standard 'y' do the same (if you want)
-vnoremap y :w !xclip -in<CR><CR>
+" vnoremap y :w !xclip -in<CR><CR>
 
 " Just use 'p' in normal mode to pull from Mac
 " (The 'read' command adds a new line; 'system' is cleaner for mid-line pasting)
 " nnoremap p :let @a=system('xclip -out')<Bar>put a<CR>
+
+" This makes the + register as the default register for y and p commands.
+" So everything you yank will go to the system clipboard. Note sure if we want
+" that.
+" set clipboard=unnamedplus
 
 " }}}
 

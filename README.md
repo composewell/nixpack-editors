@@ -68,3 +68,18 @@ codium
 ```
 
 To customize vscode extensions edit the [nix/vscodium/extensions.nix](nix/vscodium/extensions.nix) file.
+
+# Testing changes to vim config
+
+To test your own vimrc appending to the existing settings:
+
+```
+vim -c "source ./vimrc"
+```
+
+To completely nuke the existing settings and use your own:
+```
+export VIMINIT='source ./vimrc'
+vim -u ./vimrc
+vim -u NONE -N
+```
